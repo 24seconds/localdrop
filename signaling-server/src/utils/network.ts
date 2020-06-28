@@ -23,8 +23,7 @@ function getRemoteIpAddress(request: IncomingMessage): string {
   }
 
   return request.connection.remoteAddress as string;
-};
-
+}
 
 export {
   getRemoteIpAddress,

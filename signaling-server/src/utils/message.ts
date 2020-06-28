@@ -12,7 +12,7 @@ enum MessageType {
   PONG = 'PONG',
   ERROR = 'ERROR',
   ICE_CANDIDATE = 'ICE_CANDIDATE',
-};
+}
 
 export interface Message {
   messageType: MessageType;
@@ -108,6 +108,8 @@ function handleMessage(
 
   if (messageType === MessageType.PONG) {
     console.log('[Pong from client] ', (data as SimpleDataSchema).message);
+
+    return;
   }
 
   if (messageType === MessageType.OFFER) {
