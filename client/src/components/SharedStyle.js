@@ -2,14 +2,13 @@ import { css } from 'styled-components';
 import {
   mobileWidth,
   TabDefaultWidth,
-  MaterialThemeOceanic,
 } from '../constants/styleConstants';
 
 export const messageCell = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: solid 1px ${ MaterialThemeOceanic.Border };
+  border: solid 1px ${ props => props.theme.Border };
   border-top: none;
   padding: ${props => props.padding || '0 10px' };
   height: 30px;
@@ -25,13 +24,13 @@ export const rippleEffect = css`
   &:hover {
     cursor: pointer;
     opacity: 0.8;
-    background: ${ MaterialThemeOceanic.Buttons }
-        radial-gradient(circle, transparent 1%, ${ MaterialThemeOceanic.Active } 1%)
+    background: ${ props => props.theme.Buttons }
+        radial-gradient(circle, transparent 1%, ${ props => props.theme.Active } 1%)
         center/15000%;
   }
 
   &:active {
-    background-color: ${ MaterialThemeOceanic.Contrast };
+    background-color: ${ props => props.theme.Contrast };
     background-size: 100%;
     transition: background 0s;
   }

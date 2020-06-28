@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { mobileWidth, MaterialThemeOceanic } from '../constants/styleConstants';
+import { mobileWidth } from '../constants/styleConstants';
 import { ReactComponent as GithubLogo } from '../assets/github-logo.svg';
 
 const Header = styled.div`
@@ -8,7 +8,7 @@ const Header = styled.div`
   text-align: center;
   font-size: 26px;
   height: 60px;
-  background: ${ MaterialThemeOceanic.Background };
+  background: ${ props => props.theme.Background };
 
   .localdrop-header-title {
     display: flex;
@@ -17,7 +17,7 @@ const Header = styled.div`
     margin-left: 20px;
     flex-grow: 1;
     text-align: left;
-    color: ${ MaterialThemeOceanic.StringsColor };
+    color: ${ props => props.theme.StringsColor };
     font-weight: bold;
   }
 
@@ -27,14 +27,14 @@ const Header = styled.div`
     justify-content: center;
     align-items: center;
     margin-right: 20px;
-    color: ${ MaterialThemeOceanic.StringsColor };
+    color: ${ props => props.theme.StringsColor };
     cursor: pointer;
 
     svg {
       width: 24px;
       height: 24px;
       margin-right: 12px;
-      fill: white;
+      fill: ${ props => props.theme.SecondText };
     }
   }
 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
-import { MaterialThemeOceanic } from '../constants/styleConstants';
+import styled, { withTheme } from 'styled-components';
 
 const Switch = styled.div`
   display: flex;
@@ -11,14 +10,14 @@ const Switch = styled.div`
     box-sizing: border-box;
     width: 60px;
     height: 30px;
-    background-color: ${ MaterialThemeOceanic.Disabled };
+    background-color: ${ props => props.theme.Disabled };
     padding: 3px;
     cursor: pointer;
-    border: solid 2px ${ MaterialThemeOceanic.Border };
+    border: solid 2px ${ props => props.theme.Border };
     border-radius: 4px;
 
     &.on {
-      background-color: ${ MaterialThemeOceanic.Active };
+      background-color: ${ props => props.theme.Active };
     }
 
     .slider-container {
@@ -32,7 +31,8 @@ const Switch = styled.div`
         align-items: center;
         font-size: 20px;
         justify-content: center;
-        color: ${ MaterialThemeOceanic.Notifications };
+        background-color: ${ props => props.theme.SecondText };
+        color: ${ props => props.theme.Notifications };
         width: 50%;
         height: 100%;
         position: absolute;
@@ -40,7 +40,6 @@ const Switch = styled.div`
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: white;
         transition: .4s;
         border-radius: 4px;
 

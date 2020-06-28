@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { connectToPeer } from '../../utils/localApi';
 import { updatePeerUUID, updateIsSystemMessageTabSelected } from '../../redux/action';
-import { mobileWidth, MaterialThemeOceanic } from '../../constants/styleConstants';
+import { mobileWidth } from '../../constants/styleConstants';
 import ToggleSwitch from '../ToggleSwitch';
 
 const PeerTab = styled.div`
-  background: ${ MaterialThemeOceanic.SelectionBackground };
+  background: ${ props => props.theme.SelectionBackground };
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -54,9 +54,9 @@ const PeerTabButton = styled.button`
   margin: 0 5px;
   background-color: ${
     props => props.isSelected
-    ? MaterialThemeOceanic.SelectionForeground
-    : MaterialThemeOceanic.Disabled };
-  border: solid 2px ${ MaterialThemeOceanic.Border };
+    ? props => props.theme.SelectionForeground
+    : props => props.theme.Disabled };
+  border: solid 2px ${ props => props.theme.Border };
   border-radius: 4px;
   outline: none;
 
@@ -79,9 +79,9 @@ const Peers = styled.div`
   width: 100px;
   height: 40px;
   font-size: 16px;
-  background: ${ MaterialThemeOceanic.Foreground };
+  background: ${ props => props.theme.Foreground };
   margin: 0 0 0 5px;
-  border: solid 2px ${ MaterialThemeOceanic.Border };
+  border: solid 2px ${ props => props.theme.Border };
   border-radius: 4px;
 
   @media (max-width: ${ mobileWidth }) {

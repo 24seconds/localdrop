@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import MessageItemComponent from './MessageItemComponent';
 import SystemMessageItemComponent from './SystemMessageItemComponent';
-import { mobileWidth, MaterialThemeOceanic } from '../../constants/styleConstants';
+import { mobileWidth } from '../../constants/styleConstants';
 
 const MessageTable = styled.div`
   width: 100%;
@@ -13,7 +13,7 @@ const MessageTable = styled.div`
 const MessageItemContainer = styled.div`
   min-height: 100px;
   height: 100%;
-  background: ${ MaterialThemeOceanic.SecondBackground };
+  background: ${ props => props.theme.SecondBackground };
   overflow-y: scroll;
 
   /* hide scrollbar */
@@ -22,7 +22,6 @@ const MessageItemContainer = styled.div`
     width: 0;
     height: 0;
   }
-
   @media (max-width: ${ mobileWidth }) {
     height: auto;
     min-height: 300px;

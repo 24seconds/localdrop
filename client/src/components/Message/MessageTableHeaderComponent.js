@@ -5,16 +5,15 @@ import { messageCell } from '../SharedStyle';
 import {
   TabSmallWidth,
   TabSmall2Width,
-  MaterialThemeOceanic,
 } from '../../constants/styleConstants';
 
 const MessageTableHeader = styled.div`
   display: flex;
   justify-content: flex-start;
-  border: solid 2px ${ MaterialThemeOceanic.Border };
+  border: solid 2px ${ props => props.theme.Border };
   border-style: solid none;
-  background: ${ MaterialThemeOceanic.Highlight };
-  color: ${ MaterialThemeOceanic.AttributesColor };
+  background: ${ props => props.theme.Highlight };
+  color: ${ props => props.theme.AttributesColor };
 
   overflow-x: scroll;
 

@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { MaterialThemeOceanic } from '../../constants/styleConstants';
 
 const SystemMessageItem = styled.div`
   display:flex;
   align-items: center;
   min-height: 30px;
-  border-bottom: solid 1px ${ MaterialThemeOceanic.Contrast };
+  border-bottom: solid 1px ${ props => props.theme.Contrast };
   color: white;
 
   span {
     min-width: 125px;
-    color: ${ MaterialThemeOceanic.TagsColor };
+    color: ${ props => props.theme.TagsColor };
     margin: 0 10px 0 10px;
     font-size: 14px;
   }
@@ -19,7 +18,7 @@ const SystemMessageItem = styled.div`
   pre {
     white-space: pre-wrap;
     margin-right: 5px;
-    color: ${ MaterialThemeOceanic.StringsColor };
+    color: ${ props => props.theme.StringsColor };
   }
 
 `;

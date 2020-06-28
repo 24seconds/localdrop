@@ -7,7 +7,6 @@ import {
   TabContentWidth,
   TabSmallWidth,
   TabSmall2Width,
-  MaterialThemeOceanic,
   mobileWidth,
 } from '../../constants/styleConstants';
 import { getMyUUID } from '../../utils/localApi';
@@ -18,10 +17,10 @@ const MessageItem = styled.div`
   width: 100%;
   height: 40px;
   font-size: 18px;
-  border: solid 1px ${ MaterialThemeOceanic.Contrast };
+  border: solid 1px ${ props => props.theme.Contrast };
   border-style: solid none solid none;
   box-sizing: border-box;
-  color: ${ MaterialThemeOceanic.StringsColor };
+  color: ${ props => props.theme.StringsColor };
 
   @media (max-width: ${ mobileWidth }) {
     border: none;
@@ -43,8 +42,8 @@ const MessageCell = styled.div`
 const MessageInOutCell = styled(MessageCell)`
   color: ${ props =>
     props.isMyMessagePacket
-    ? MaterialThemeOceanic.ParametersColor
-    : MaterialThemeOceanic.OperatorsColor };
+    ? props => props.theme.ParametersColor
+    : props => props.theme.OperatorsColor };
 `;
 
 
@@ -58,7 +57,7 @@ const MessageContentCellContainer = styled.div`
   flex-grow: 1;
 
   @media (max-width: ${ mobileWidth }) {
-    border: solid 1px ${ MaterialThemeOceanic.Border };
+    border: solid 1px ${ props => props.theme.Border };
     border-style: none solid solid none;
   }
 `;
@@ -74,7 +73,7 @@ const MessageContentCell = styled.span`
   white-space: nowrap;
 
   a {
-    color: ${ MaterialThemeOceanic.LinksColor };
+    color: ${ props => props.theme.LinksColor };
   }
 `;
 
@@ -87,7 +86,7 @@ const MessageButtonContainer = styled.div`
   padding: 0 10px;
 
   @media (max-width: ${ mobileWidth }) {
-    border: solid 1px ${ MaterialThemeOceanic.Border };
+    border: solid 1px ${ props => props.theme.Border };
     border-style: none solid solid none;
   }
 `;
@@ -100,9 +99,9 @@ const MessageButtonCell = styled.button`
   outline: none;
   font-size: 14px;
 
-  background-color: ${ MaterialThemeOceanic.Buttons };
-  color: ${ MaterialThemeOceanic.AttributesColor };
-  border: 2px solid ${ MaterialThemeOceanic.Border };
+  background-color: ${ props => props.theme.Buttons };
+  color: ${ props => props.theme.AttributesColor };
+  border: 2px solid ${ props => props.theme.Border };
   border-radius: 4px;
 
   ${ rippleEffect };

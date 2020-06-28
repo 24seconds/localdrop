@@ -10,7 +10,7 @@ import {
 import { addFiles } from '../../redux/action';
 import { generateFingerPrint } from '../../utils/commonUtil';
 import FingerprintedFile from '../../utils/dataSchema/FingerprintedFile';
-import { mobileWidth, MaterialThemeOceanic } from '../../constants/styleConstants';
+import { mobileWidth } from '../../constants/styleConstants';
 import { rippleEffect } from '../SharedStyle';
 
 const Send = styled.div`
@@ -18,19 +18,20 @@ const Send = styled.div`
   justify-content: center;
   align-items: center;
   max-height: 180px;
-  height: 80px;
-  background-color: ${ MaterialThemeOceanic.SecondBackground };
+  height: 70px;
+  margin-top: 5px;
+  background-color: ${ props => props.theme.SecondBackground };
 
   textarea {
-    background-color: ${ MaterialThemeOceanic.SecondBackground };
-    color: White;
+    background-color: ${ props => props.theme.SecondBackground };
+    color: ${ props => props.theme.SecondText  };
     resize: none;
     flex-grow: 1;
     padding: 10px 5px;
     min-height: 40px;
     max-height: 120px;
     outline: none;
-    border: 2px solid ${ MaterialThemeOceanic.Border };
+    border: 2px solid ${ props => props.theme.Border };
     border-radius: 4px;
   }
 
@@ -46,15 +47,16 @@ const FileInput = styled.input`
 const SelectFileButton = styled.button`
   width: 50px;
   height: 50px;
-  border: 1px solid ${ MaterialThemeOceanic.Border };
+  border: 1px solid ${ props => props.theme.Border };
   border-radius: 4px;
   margin: 0 5px;
-  background-color: ${ MaterialThemeOceanic.Buttons };
+  background-color: ${ props => props.theme.Buttons };
   outline: none;
 
-  color: ${ MaterialThemeOceanic.ParametersColor };
+  color: ${ props => props.theme.ParametersColor };
   font-size: 16px;
   font-weight: 800;
+  ${ rippleEffect };
 
   @media (max-width: ${ mobileWidth }) {
     width: 40px;
@@ -65,9 +67,9 @@ const SelectFileButton = styled.button`
 const SendPasteButton = styled.button`
   width: 50px;
   outline: none;
-  background-color: ${ MaterialThemeOceanic.Buttons };
-  color: ${ MaterialThemeOceanic.AttributesColor };
-  border: 2px solid ${ MaterialThemeOceanic.Border };
+  background-color: ${ props => props.theme.Buttons };
+  color: ${ props => props.theme.AttributesColor };
+  border: 2px solid ${ props => props.theme.Border };
   border-radius: 4px;
   padding: 0;
   margin: 0 3px;
