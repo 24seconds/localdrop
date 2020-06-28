@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import { WebSocketManager, isWebSocketOpen } from './webSocketManager';
+import { WebSocketContainer, isWebSocketOpen } from './webSocketManager';
 
 enum MessageType {
   UUID = 'UUID',
@@ -95,7 +95,7 @@ function parseMessage(rawMessage: string): Message {
 }
 
 function handleMessage(
-  parsedMessage: Message, ws: WebSocket, webSocketManager: WebSocketManager, ipAddress: string,
+  parsedMessage: Message, ws: WebSocket, webSocketContainer: WebSocketContainer, ipAddress: string,
 ) {
   const { messageType, data } = parsedMessage;
 
@@ -114,7 +114,7 @@ function handleMessage(
     const { fromUUID, toUUID, offer } = data as OfferDataSchema;
     const timeStamp = (new Date()).toISOString();
 
-    const otherSocket = webSocketManager[ipAddress].webSockets[toUUID];
+    const otherSocket = webSocketContainer[ipAddress].webSockets[toUUID];
 
     if (otherSocket && isWebSocketOpen(otherSocket)) {
       const offerMessage = createMessage(MessageType.OFFER, {
@@ -133,7 +133,7 @@ function handleMessage(
     const { fromUUID, toUUID, answer } = data as AnswerDataSchema;
 
     const timeStamp = (new Date()).toISOString();
-    const otherSocket = webSocketManager[ipAddress].webSockets[toUUID];
+    const otherSocket = webSocketContainer[ipAddress].webSockets[toUUID];
 
     if (otherSocket && isWebSocketOpen(otherSocket)) {
       const answerMessage = createMessage(MessageType.ANSWER, {
@@ -149,7 +149,7 @@ function handleMessage(
   }
 
   if (messageType === MessageType.PEERS) {
-    const peers = Object.keys(webSocketManager[ipAddress].webSockets);
+    const peers = Object.keys(webSocketContainer[ipAddress].webSockets);
     const peersMessage = createMessage(MessageType.PEERS, { peers });
 
     ws.send(peersMessage);
@@ -158,7 +158,7 @@ function handleMessage(
   if (messageType === MessageType.ICE_CANDIDATE) {
     const { toUUID } = data as IceCandidateDataSchema;
 
-    const otherWebSocket = webSocketManager[ipAddress].webSockets[toUUID];
+    const otherWebSocket = webSocketContainer[ipAddress].webSockets[toUUID];
 
     if (otherWebSocket) {
       const iceMessage = createMessage(MessageType.ICE_CANDIDATE, data);
