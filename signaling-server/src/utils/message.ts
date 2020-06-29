@@ -14,6 +14,22 @@ enum MessageType {
   ICE_CANDIDATE = 'ICE_CANDIDATE',
 }
 
+export enum HandleMessageEventType {
+  DELETE_PEER = 'DELETE_PEER',
+}
+
+export interface HandleMessageDeleteDataSchema {
+  ipAddress: string;
+  peerUUID: string;
+}
+
+export type HandleMessageEventDataSchema = HandleMessageDeleteDataSchema;
+
+export type HandleMessageEvent = {
+  eventType: HandleMessageEventType;
+  data: HandleMessageEventDataSchema;
+};
+
 export interface Message {
   messageType: MessageType;
   data: MessageDataSchema;
@@ -96,27 +112,28 @@ function parseMessage(rawMessage: string): Message {
 
 function handleMessage(
   parsedMessage: Message, ws: WebSocket, webSocketContainer: WebSocketContainer, ipAddress: string,
-) {
+): HandleMessageEvent | null {
   const { messageType, data } = parsedMessage;
 
   if (messageType === MessageType.PING) {
     const message = createMessage(MessageType.PONG, { message: 'pong from server!' });
     ws.send(message);
 
-    return;
+    return null;
   }
 
   if (messageType === MessageType.PONG) {
     console.log('[Pong from client] ', (data as SimpleDataSchema).message);
 
-    return;
+    return null;
   }
 
   if (messageType === MessageType.OFFER) {
     const { fromUUID, toUUID, offer } = data as OfferDataSchema;
     const timeStamp = (new Date()).toISOString();
 
-    const otherSocket = webSocketContainer[ipAddress].webSockets[toUUID];
+    const otherSocket = webSocketContainer[ipAddress]
+      && webSocketContainer[ipAddress].webSockets[toUUID];
 
     if (otherSocket && isWebSocketOpen(otherSocket)) {
       const offerMessage = createMessage(MessageType.OFFER, {
@@ -129,6 +146,11 @@ function handleMessage(
       const errorMessage = createMessage(MessageType.ERROR, { message });
 
       ws.send(errorMessage);
+
+      return {
+        eventType: HandleMessageEventType.DELETE_PEER,
+        data: { ipAddress, peerUUID: toUUID },
+      };
     }
   }
 
@@ -136,7 +158,8 @@ function handleMessage(
     const { fromUUID, toUUID, answer } = data as AnswerDataSchema;
 
     const timeStamp = (new Date()).toISOString();
-    const otherSocket = webSocketContainer[ipAddress].webSockets[toUUID];
+    const otherSocket = webSocketContainer[ipAddress]
+      && webSocketContainer[ipAddress].webSockets[toUUID];
 
     if (otherSocket && isWebSocketOpen(otherSocket)) {
       const answerMessage = createMessage(MessageType.ANSWER, {
@@ -149,6 +172,11 @@ function handleMessage(
       const errorMessage = createMessage(MessageType.ERROR, { message });
 
       ws.send(errorMessage);
+
+      return {
+        eventType: HandleMessageEventType.DELETE_PEER,
+        data: { ipAddress, peerUUID: toUUID },
+      };
     }
   }
 
@@ -162,14 +190,22 @@ function handleMessage(
   if (messageType === MessageType.ICE_CANDIDATE) {
     const { toUUID } = data as IceCandidateDataSchema;
 
-    const otherWebSocket = webSocketContainer[ipAddress].webSockets[toUUID];
+    const otherWebSocket = webSocketContainer[ipAddress]
+      && webSocketContainer[ipAddress].webSockets[toUUID];
 
     if (otherWebSocket) {
       const iceMessage = createMessage(MessageType.ICE_CANDIDATE, data);
 
       otherWebSocket.send(iceMessage);
+    } else {
+      return {
+        eventType: HandleMessageEventType.DELETE_PEER,
+        data: { ipAddress, peerUUID: toUUID },
+      };
     }
   }
+
+  return null;
 }
 
 export {

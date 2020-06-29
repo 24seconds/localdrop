@@ -5,6 +5,9 @@ import {
   createMessage,
   parseMessage,
   handleMessage,
+  HandleMessageEvent,
+  HandleMessageEventType,
+  HandleMessageDeleteDataSchema,
 } from './message';
 
 interface webSocketGroup {
@@ -22,7 +25,7 @@ export function isWebSocketOpen(webSocket: WebSocket) {
   return webSocket.readyState === WebSocket.OPEN;
 }
 
-class TestWebSocketManager {
+export class WebSocketManager {
   webSocketContainer: WebSocketContainer = {};
 
   addPeer(ipAddress: string, uuid: string, ws: WebSocket) {
@@ -42,7 +45,12 @@ class TestWebSocketManager {
       console.log('[Message from client] ', message as string);
 
       const parsedMessage = parseMessage(message as string);
-      handleMessage(parsedMessage, ws, webSocketContainer, ipAddress);
+      const result = handleMessage(parsedMessage, ws, webSocketContainer, ipAddress);
+
+      if (result) {
+        this.handleMessageResult(result);
+      }
+
 
       console.log('parsedMessage is ', parsedMessage);
     });
@@ -75,6 +83,10 @@ class TestWebSocketManager {
   }
 
   deletePeer(ipAddress: string, peerUUID: string) {
+    if (!this.webSocketContainer[ipAddress]) {
+      return;
+    }
+
     if (this.webSocketContainer[ipAddress].webSockets[peerUUID]) {
       delete this.webSocketContainer[ipAddress].webSockets[peerUUID];
     }
@@ -142,10 +154,19 @@ class TestWebSocketManager {
       console.log(`[${targetUUID}]: target peer closed `, err);
     };
   }
+
+  handleMessageResult(event: HandleMessageEvent) {
+    const { eventType, data } = event;
+
+    if (eventType === HandleMessageEventType.DELETE_PEER) {
+      const { ipAddress, peerUUID } = data as HandleMessageDeleteDataSchema;
+
+      this.deletePeer(ipAddress, peerUUID);
+    }
+
+  }
 }
 
 
-const webSocketManager: WebSocketContainer = {};
-const testWebSocketManager = new TestWebSocketManager();
-
-export default testWebSocketManager;
+const webSocketManager = new WebSocketManager();
+export default webSocketManager;
