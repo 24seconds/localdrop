@@ -15,7 +15,7 @@ const wss = new WebSocket.Server({
 wss.on('connection', (ws: WebSocket, request: IncomingMessage) => {
   if (!(request.headers.origin?.includes('localhost')
     || request.headers.origin?.includes('localdrop'))
-    || request.headers.origint?.includes('24seconds.github.io')) {
+    || request.headers.origin?.includes('24seconds.github.io')) {
     console.log('Can not recognize host');
     console.log('request.headers.origin is ', request.headers.origin);
     ws.close(4001, 'Can not recognize host. Signaling server accepts localhost and localdrop only');
