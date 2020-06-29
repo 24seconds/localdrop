@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as GithubLogo } from '../assets/github-logo.svg';
 import { mobileWidth } from '../constants/styleConstants';
+import { LOCALDROP_APP_VERSION } from '../constants/constant';
 
 
 const Footer = styled.div`
@@ -14,7 +15,6 @@ const Footer = styled.div`
     display: flex;
     align-items: center;
     text-align: left;
-    color: $color-text;
     font-size: 14px;
     margin: 2px 20px 2px 20px;
     cursor: pointer;
@@ -25,6 +25,10 @@ const Footer = styled.div`
       margin-right: 6px;
       fill: ${ props => props.theme.SecondText };
     }
+  }
+
+  .localdrop-app-version {
+    margin-left: auto;
   }
 
   @media (max-width: ${ mobileWidth }) {
@@ -59,6 +63,9 @@ export default class FooterComponent extends Component {
         <div onClick={ this.onClickRepo }>
           <GithubLogo/>
           repo : localdrop
+        </div>
+        <div className='localdrop-app-version'>
+          { `version: ${ LOCALDROP_APP_VERSION }` }
         </div>
       </Footer>
     );
