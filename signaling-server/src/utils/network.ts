@@ -1,10 +1,10 @@
-import { IncomingMessage } from "http";
+import { IncomingMessage } from 'http';
 
 enum LocalIpAddress {
   localhostV4 = '::ffff:127.0.0.1',
   localhostV6 = '::1',
   localhost = '127.0.0.1',
-};
+}
 
 function getRemoteIpAddress(request: IncomingMessage): string {
   const { headers } = request;
