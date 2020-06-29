@@ -493,6 +493,10 @@ function addMessageTypeEventListener(peerConnectionManager) {
 
   peerConnectionManager.addEventListener(MESSAGE_TYPE.ERROR, event => {
     // handle error later
+
+    const { message } = event;
+    writeSystemMessage(message);
+
   });
 
   peerConnectionManager.addEventListener(MESSAGE_TYPE.ICE_CANDIDATE, async (event) => {
