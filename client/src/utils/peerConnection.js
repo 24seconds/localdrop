@@ -27,6 +27,7 @@ import {
 function createPeerConnection(uuid) {
   const peerConnection = new RTCPeerConnection();
 
+  // TODO: Handle createDataChannel error later
   const dataChannel = peerConnection.createDataChannel('localdropDataChannel', {
     negotiated: true,
     id: 0,
@@ -84,10 +85,12 @@ function createPeerConnection(uuid) {
         // do nothing
         break;
       case 'disconnected':
+        break;
       case 'failed':
         writeSystemMessage('onconnectionstatechange, peerConnection failed');
         break;
       case 'closed':
+        // TODO: Recreate PeerConnectionManager
         writeSystemMessage('onconnectionstatechange, peerConnection closed');
         break;
       default:
@@ -163,12 +166,14 @@ function handleDataChannelStatusChange(event, uuid) {
   console.log(`[peer ${uuid}]: handleDataChannelStatusChange, event is `, event);
   const { type: eventType } = event;
 
+  // TODO: Delete dataChannel in peerConnectionManager
   if (eventType === 'close') {
     const systemMessage = `[peer #${uuid}]: dataChannel closed `;
     writeSystemMessage(systemMessage);
   }
 }
 
+// TODO: Handle error later
 async function createOffer(peerConnection) {
   const offer = await peerConnection.createOffer();
   await peerConnection.setLocalDescription(offer);
@@ -183,6 +188,7 @@ async function setRemoteOffer(peerConnection, offer) {
   console.log(peerConnection);
 }
 
+// TODO: Handle error later
 async function createAnswer(peerConnection) {
   const answer = await peerConnection.createAnswer();
   console.log('createAnswer, answer is ', answer);
@@ -227,6 +233,7 @@ function addClientEventTypeEventListener(peerConnectionManager) {
 
     // check if peerConnection is done => if done, do nothing
     if (peerConnection.connectionState === 'connected') {
+      console.log(`[peerConnectionManger]: ${CLIENT_EVENT_TYPE.CONNECT}, peerConnection already connected`);
       return;
     }
 

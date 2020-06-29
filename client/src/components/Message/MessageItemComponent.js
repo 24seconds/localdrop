@@ -211,8 +211,6 @@ class MessageItemComponent extends Component {
   }
 
   renderMessagePacket(messagePacket) {
-    console.log('messagePacket is ', messagePacket);
-
     if (!messagePacket) {
       return;
     }

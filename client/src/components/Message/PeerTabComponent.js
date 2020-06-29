@@ -98,11 +98,11 @@ class PeerTabComponent extends Component {
   constructor(props) {
     super(props);
 
-    this.onClick = this.onClick.bind(this);
+    this.onClick = this.onClickPeer.bind(this);
     this.onClickSystemMessageTab = this.onClickSystemMessageTab.bind(this);
   }
 
-  onClick(uuid) {
+  onClickPeer(uuid) {
     console.log('uuid is ', uuid);
 
     this.props.dispatch(updatePeerUUID(uuid));
@@ -141,7 +141,7 @@ class PeerTabComponent extends Component {
                     <PeerTabButton
                       key={ peer }
                       isSelected={ peer === selectedPeerUUID }
-                      onClick={ this.onClick.bind(this, peer) }>
+                      onClick={ this.onClickPeer.bind(this, peer) }>
                       { `#${peer}` }
                     </PeerTabButton>
                   )
