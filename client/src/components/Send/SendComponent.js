@@ -165,7 +165,7 @@ class SendComponent extends Component {
     if (peerUUID) {
       sendTextToPeer(peerUUID, text);
       // connectToPeer(uuid);
-      // this.setState({ text: '' });
+      this.setState({ text: '' });
       if (this.textareaRef) {
         this.textareaRef.focus();
       }
