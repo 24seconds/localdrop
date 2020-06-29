@@ -59,6 +59,7 @@ const PeerTabButton = styled.button`
   border: solid 2px ${ props => props.theme.Border };
   border-radius: 4px;
   outline: none;
+  color: ${ props => props.theme.Contrast };
 
   &:hover {
     cursor: pointer;
@@ -76,13 +77,14 @@ const Peers = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100px;
+  width: 80px;
   height: 40px;
   font-size: 16px;
-  background: ${ props => props.theme.Foreground };
+  background: ${ props => props.theme.SecondBackground };
   margin: 0 0 0 5px;
   border: solid 2px ${ props => props.theme.Border };
   border-radius: 4px;
+  color: ${ props => props.theme.FunctionsColor };
 
   @media (max-width: ${ mobileWidth }) {
     width: 50px;
