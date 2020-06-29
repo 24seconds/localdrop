@@ -20,7 +20,12 @@ import {
 } from '../redux/action';
 import { parseChunkAndHeader } from './peerMessage';
 import { getCurrentTime, generateFingerPrint } from './commonUtil';
-import { accumulateChunk, transferFile, isDownloadInProgress } from './downloadManager';
+import {
+  accumulateChunk,
+  transferFile,
+  isDownloadInProgress,
+  handleDataChannelClose
+} from './downloadManager';
 
 function sendTextToPeer(uuid, text) {
   const event = new LocalDropEvent(
@@ -71,6 +76,10 @@ function requestDownloadFile(uuid, data) {
     }));
 
   peerConnectionManager.dispatchEvent(event);
+}
+
+function abortDownloadFile(otherUUID) {
+  handleDataChannelClose(otherUUID);
 }
 
 function connectToPeer(uuid) {
@@ -174,8 +183,8 @@ function parsePeerChunk(chunkWithHeader) {
   return parseChunkAndHeader(chunkWithHeader);
 }
 
-async function writePeerChunk(chunkWithHeader) {
-  await accumulateChunk(chunkWithHeader);
+async function writePeerChunk(chunkWithHeader, uuid) {
+  await accumulateChunk(chunkWithHeader, uuid);
 }
 
 function writeSystemMessage(message) {
@@ -208,4 +217,5 @@ export {
   parsePeerChunk,
   writePeerChunk,
   writeSystemMessage,
+  abortDownloadFile,
 };

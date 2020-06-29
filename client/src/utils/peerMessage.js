@@ -58,7 +58,7 @@ function parseChunkAndHeader(chunkWithHeader) {
   return {
     fingerprint,
     chunk
-  }
+  };
 }
 
 

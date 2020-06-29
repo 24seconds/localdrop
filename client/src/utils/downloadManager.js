@@ -10,16 +10,30 @@ import { concatHeaderAndChunk } from './peerMessage';
 import StreamSaver from 'streamsaver';
 StreamSaver.mitm = `${ process.env.REACT_APP_MITM_URL }/mitm.html?version=2.0.0`;
 
-const MAXIMUM_ACC_SIZE = 625;
-const chunkStore = { };
+const FIRST_ACC_SIZE = 66;
+const DEFAULT_ACC_SIZE = 625;
+
+let MAXIMUM_ACC_SIZE = FIRST_ACC_SIZE;
+
+// For receiver side store
+const chunkStore = {
+  // schema
+  // [fingerprint]: {
+  //   accArr: [],
+  //   downloadWriter: null,
+  //   offset: 0,
+  //   size: 0,
+  // }
+};
+const currentDownloadJob = {
+  // schema
+  // [peerUUID]: { writer, fingerprint }
+};
+
+
+// For transfer side store
 const transferStore = { };
 
-const defaultStructure = {
-  accArr: [],
-  downloadWriter: null,
-  offset: 0,
-  size: 0,
-};
 
 async function writeChunk(chunkArr, downloadWriter) {
   const arrayBuffers = [...chunkArr];
@@ -30,7 +44,9 @@ async function writeChunk(chunkArr, downloadWriter) {
   downloadWriter.write(buffer);
 }
 
-async function accumulateChunk(chunkWithHeader) {
+
+// TODO: Handle the case when user cancel downloads manually
+async function accumulateChunk(chunkWithHeader, uuid) {
   const {
     fingerprint, chunk
   } = parsePeerChunk(chunkWithHeader);
@@ -59,6 +75,11 @@ async function accumulateChunk(chunkWithHeader) {
       writer.abort();
     });
 
+    // add writer to download job
+    currentDownloadJob[uuid] = currentDownloadJob[uuid] || [];
+    currentDownloadJob[uuid] = [{ writer, fingerprint }, ...currentDownloadJob[uuid]];
+
+
     chunkStore[fingerprint].downloadWriter = writer;
     const chunkArr = chunkStore[fingerprint].accArr;
 
@@ -74,15 +95,19 @@ async function accumulateChunk(chunkWithHeader) {
     if (chunkArr.length >= MAXIMUM_ACC_SIZE && chunkStore[fingerprint].available) {
       chunkStore[fingerprint].available = false;
 
-      if (chunkArr.length !== MAXIMUM_ACC_SIZE) {
-        throw new Error(`length are different, ${MAXIMUM_ACC_SIZE}/${chunkArr.length}`);
-      }
+      // if (chunkArr.length !== MAXIMUM_ACC_SIZE) {
+      //   throw new Error(`length are different, ${MAXIMUM_ACC_SIZE}/${chunkArr.length}`);
+      // }
 
       const arrayBuffers = [...chunkArr];
       chunkStore[fingerprint].accArr.splice(0, MAXIMUM_ACC_SIZE);
 
       await writeChunk(arrayBuffers, downloadWriter);
       chunkStore[fingerprint].available = true;
+
+      if (MAXIMUM_ACC_SIZE === FIRST_ACC_SIZE) {
+        MAXIMUM_ACC_SIZE = DEFAULT_ACC_SIZE;
+      }
     }
   }
 
@@ -95,6 +120,23 @@ async function accumulateChunk(chunkWithHeader) {
     chunkStore[fingerprint].accArr = [];
 
     downloadWriter.close();
+
+    // delete writer in download job
+    if (currentDownloadJob[uuid]) {
+      const index = currentDownloadJob[uuid].findIndex((item) => {
+        return item.fingerprint === fingerprint;
+      });
+
+      if (index !== -1) {
+        currentDownloadJob[uuid].splice(index, 1);
+      }
+
+      if (currentDownloadJob[uuid].length === 0) {
+        delete currentDownloadJob[uuid];
+      }
+
+      console.log('currentDownloadJob is ', currentDownloadJob);
+    }
 
     delete chunkStore[fingerprint];
   }
@@ -131,7 +173,7 @@ function transferFile(fingerprint, file, dataChannel, uuid) {
   let offset = 0;
 
   console.log('chunkSize is ', chunkSize);
-  console.log('file.size is ', file.size)
+  console.log('file.size is ', file.size);
 
   readFile(file, offset, chunkSize, reader, fingerprint, uuid);
 
@@ -146,9 +188,11 @@ function transferFile(fingerprint, file, dataChannel, uuid) {
     console.log('chunkWithHeader is ', chunkWithHeader);
     console.log('chunkWithHeader.byteLength is ', chunkWithHeader.byteLength);
 
-    // return;
-    dataChannel.send(chunkWithHeader);
+    if (dataChannel.readyState === 'closing' || dataChannel.readyState === 'closed') {
+      return;
+    }
 
+    dataChannel.send(chunkWithHeader);
     offset += chunkSize;
 
     // read next chunk
@@ -156,9 +200,22 @@ function transferFile(fingerprint, file, dataChannel, uuid) {
   });
 }
 
+function handleDataChannelClose(otherUUID) {
+  if (currentDownloadJob[otherUUID]) {
+    currentDownloadJob[otherUUID].forEach(({ writer }) => {
+      writer.abort();
+      // TODO: Record File name also
+      writeSystemMessage(`Download from #${ otherUUID } Aborted`);
+    });
+
+    delete currentDownloadJob[otherUUID];
+  }
+}
+
 
 export {
   accumulateChunk,
   transferFile,
   isDownloadInProgress,
+  handleDataChannelClose,
 }

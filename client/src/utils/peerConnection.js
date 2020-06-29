@@ -22,6 +22,7 @@ import {
   transferFileToPeer,
   writePeerChunk,
   writeSystemMessage,
+  abortDownloadFile,
 } from './localApi';
 
 function createPeerConnection(uuid) {
@@ -40,6 +41,8 @@ function createPeerConnection(uuid) {
 
   dataChannel.onclose = (event) => {
     handleDataChannelStatusChange(event, uuid);
+
+    abortDownloadFile(uuid);
   };
 
   dataChannel.onmessage = (event) => {
@@ -106,7 +109,7 @@ async function handleDataChannelMessage(event, uuid) {
   if (typeof event.data !== 'string') {
     const arrayBuffer = event.data;
 
-    await writePeerChunk(arrayBuffer);
+    await writePeerChunk(arrayBuffer, uuid);
 
     return;
   }
