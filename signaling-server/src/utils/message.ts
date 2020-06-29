@@ -96,7 +96,7 @@ function parseMessage(rawMessage: string): Message {
     const message: Message = JSON.parse(rawMessage);
 
     if (!Object.values(MessageType).includes(message.messageType)) {
-      throw new Error(`This messageType is not supported! type: ${message.messageType}`);
+      throw new Error(`MessageType not supported! type: ${message.messageType}`);
     }
 
     return message;
