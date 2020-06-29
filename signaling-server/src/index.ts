@@ -13,7 +13,7 @@ const wss = new WebSocket.Server({
 });
 
 wss.on('connection', (ws: WebSocket, request: IncomingMessage) => {
-  if (!(request.headers.origin?.includes('localhost') || request.headers.origin?.includes('localdrop'))) {
+  if (!(request.headers.origin?.includes('localhost2') || request.headers.origin?.includes('localdrop'))) {
     console.log('Can not recognize host');
     ws.close(4001, 'Can not recognize host. Signaling server accepts localhost and localdrop only');
     return;
