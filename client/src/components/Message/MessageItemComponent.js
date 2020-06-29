@@ -128,7 +128,6 @@ class MessageItemComponent extends Component {
         // TODO: notify user that copy to clip failed
       });
 
-
       return;
     }
 
