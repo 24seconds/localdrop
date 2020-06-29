@@ -16,12 +16,6 @@ const MessageItemContainer = styled.div`
   background: ${ props => props.theme.SecondBackground };
   overflow-y: scroll;
 
-  /* hide scrollbar */
-  scrollbar-width: none; /* Firefox */
-  ::-webkit-scrollbar { /* WebKit */
-    width: 0;
-    height: 0;
-  }
   @media (max-width: ${ mobileWidth }) {
     height: auto;
     min-height: 300px;
