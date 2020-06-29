@@ -84,7 +84,7 @@ class TestWebSocketManager {
       delete this.webSocketContainer[ipAddress];
     }
 
-    console.log('deletePeer, webSocketContainer: ', JSON.stringify(this.webSocketContainer, undefined, 4));
+    console.log('deletePeer, webSocketContainer: ', this.webSocketContainer);
   }
 
   sendMessageToPeer(ipAddress: string, peerUUID: string, message: string) {

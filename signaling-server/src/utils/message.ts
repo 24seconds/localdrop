@@ -125,7 +125,8 @@ function handleMessage(
 
       otherSocket.send(offerMessage);
     } else {
-      const errorMessage = createMessage(MessageType.ERROR, { message: 'Peer does not exist!' });
+      const message = '[Message from Signal server]: Peer does not exist!';
+      const errorMessage = createMessage(MessageType.ERROR, { message });
 
       ws.send(errorMessage);
     }
@@ -144,7 +145,8 @@ function handleMessage(
 
       otherSocket.send(answerMessage);
     } else {
-      const errorMessage = createMessage(MessageType.ERROR, { message: 'Peer does not exist!' });
+      const message = '[Message from Signal server]: Peer does not exist!';
+      const errorMessage = createMessage(MessageType.ERROR, { message });
 
       ws.send(errorMessage);
     }
