@@ -11,6 +11,7 @@ const MessageTable = styled.div`
 `;
 
 const MessageItemContainer = styled.div`
+  display: ${ props => props.isSelected ? 'block' : 'none' };
   min-height: 100px;
   height: 100%;
   background: ${ props => props.theme.SecondBackground };
@@ -34,9 +35,9 @@ class MessageTableComponent extends Component {
     return (
       <MessageTable className='localdrop-message-table'>
         {
-          !systemMessageMetaData.isSelected &&
           <MessageItemContainer
-            className='localdrop-message-item-container'>
+            className='localdrop-message-item-container'
+            isSelected={ !systemMessageMetaData.isSelected }>
             {
               messagePackets.map(messagePacket => {
                 const { data } = messagePacket;
@@ -51,8 +52,8 @@ class MessageTableComponent extends Component {
           </MessageItemContainer>
         }
         {
-          systemMessageMetaData.isSelected &&
-          <MessageItemContainer>
+          <MessageItemContainer
+            isSelected={ systemMessageMetaData.isSelected }>
             {
               systemMessages.map(systemMessage => {
 
