@@ -146,10 +146,8 @@ async function handleDataChannelMessage(event, uuid) {
   }
 
   if (messageType === PEER_MESSAGE_TYPE.DOWNLOAD) {
-    // TODO: Handle this later
     const { fingerprint } = data;
     // transfer file
-
     transferFileToPeer(fingerprint, uuid);
     return;
   }

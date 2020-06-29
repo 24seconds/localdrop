@@ -3,6 +3,7 @@ import {
   getMessagePacket, 
   sendErrorToPeer,
   getMyUUID,
+  writeSystemMessage,
 } from './localApi';
 import { HEADER_SIZE_IN_BYTES } from '../constants/constant';
 import { concatHeaderAndChunk } from './peerMessage';
@@ -99,7 +100,7 @@ async function accumulateChunk(chunkWithHeader) {
   }
 }
 
-function readFile(file, offset, chunkSize, reader, fingerprint) {
+function readFile(file, offset, chunkSize, reader, fingerprint, uuid) {
   if (offset > file.size) {
     if (transferStore[fingerprint]) {
       transferStore[fingerprint] = false;
@@ -107,6 +108,9 @@ function readFile(file, offset, chunkSize, reader, fingerprint) {
 
     console.log('offset is ', offset);
     console.log('file.size is ', file.size);
+
+    const message = `Transfer file to #${ uuid } done.\nFile: ${ file.name }`
+    writeSystemMessage(message);
 
     return;
   }
@@ -119,7 +123,7 @@ function isDownloadInProgress(fingerprint) {
   return transferStore[fingerprint] || false;
 }
 
-function transferFile(fingerprint, file, dataChannel) {
+function transferFile(fingerprint, file, dataChannel, uuid) {
   transferStore[fingerprint] = true;
 
   const reader = new FileReader();
@@ -129,7 +133,7 @@ function transferFile(fingerprint, file, dataChannel) {
   console.log('chunkSize is ', chunkSize);
   console.log('file.size is ', file.size)
 
-  readFile(file, offset, chunkSize, reader, fingerprint);
+  readFile(file, offset, chunkSize, reader, fingerprint, uuid);
 
   reader.addEventListener('load', async (event) => {
     console.log('event.target.result is ', event.target.result);
@@ -148,7 +152,7 @@ function transferFile(fingerprint, file, dataChannel) {
     offset += chunkSize;
 
     // read next chunk
-    readFile(file, offset, chunkSize, reader, fingerprint);
+    readFile(file, offset, chunkSize, reader, fingerprint, uuid);
   });
 }
 

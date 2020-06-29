@@ -129,7 +129,6 @@ function transferFileToPeer(fingerprint, uuid) {
   const file = getFileToTransfer(fingerprint);
 
   if (!file) {
-    // TODO: handle later. Notify user that file link has expired!
     const message = `[From #${ getMyUUID() }]: ${ fingerprint } file link has expired`;
     sendErrorToPeer(uuid, message);
     return;
@@ -155,7 +154,7 @@ function transferFileToPeer(fingerprint, uuid) {
     sendErrorToPeer(uuid, message);
     return;
   } else {
-    transferFile(fingerprint, file, dataChannel);
+    transferFile(fingerprint, file, dataChannel, uuid);
   }
 }
 
