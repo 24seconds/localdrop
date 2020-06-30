@@ -35,6 +35,23 @@ export class WebSocketManager {
     webSocketContainer[ipAddress].webSockets = webSocketContainer[ipAddress].webSockets || {};
 
     webSocketContainer[ipAddress].webSockets[uuid] = ws;
+
+    this.pingPeriodically(ipAddress, uuid, ws);
+  }
+
+  pingPeriodically(ipAddress: string, uuid: string, ws: WebSocket) {
+    const intervalId = setInterval(() => {
+      console.log(`[Ping]: Send ping to #${uuid}`);
+      if (ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
+        clearInterval(intervalId);
+
+        this.deletePeer(ipAddress, uuid);
+        return;
+      }
+
+      const pingMessage = createMessage(MessageType.PING, { message: 'Ping from server!' });
+      ws.send(pingMessage);
+    }, 1000 * 30);
   }
 
   addEventListenerToWebSocket(ipAddress: string, peerUUID: string, ws: WebSocket) {
