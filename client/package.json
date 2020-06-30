@@ -1,4 +1,5 @@
 {
+  "homepage": "https://24seconds.github.io/localdrop",
   "name": "client",
   "version": "0.1.0",
   "private": true,
@@ -24,7 +25,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "serve-service-worker": "./run_serve.sh",
-    "dev": "concurrently \"npm start\" \"npm run serve-service-worker\""
+    "dev": "concurrently \"npm start\" \"npm run serve-service-worker\"",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -42,6 +45,7 @@
     ]
   },
   "devDependencies": {
+    "gh-pages": "^3.1.0",
     "http-server": "^0.12.3"
   }
 }
