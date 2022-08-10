@@ -10,9 +10,20 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.4.2
-      - run: cd client && yarn
-      - uses: chromaui/action@v1
+      - name: Checkout repository
+        uses: actions/checkout@v2.4.2
         with:
+          fetch-depth: 0
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.4.1
+        with:
+          node-version: 16.16.0
+      - name: Install dependencies
+        working-directory: client
+        run: yarn
+      - name: Publis to Chromatic
+        uses: chromaui/action@v1
+        with:
+          workingDir: client
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}
