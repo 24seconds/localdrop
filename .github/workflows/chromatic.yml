@@ -4,15 +4,21 @@ on:
   push:
     branches:
       - main
+      - fix-chromatic-workflow
 
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.4.2
-      - run: cd client && yarn
-      - uses: chromaui/action@v1
+      - name: Checkout repository
+        uses: actions/checkout@v2.4.2
+        with:
+          fetch-depth: 0
+      - name: Install dependencies
+        run: cd client && yarn
+      - name: Publis to Chromatic
+        uses: chromaui/action@v1
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}
